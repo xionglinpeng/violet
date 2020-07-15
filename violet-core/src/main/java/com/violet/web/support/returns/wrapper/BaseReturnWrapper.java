@@ -11,6 +11,9 @@ public abstract class BaseReturnWrapper {
 
     private Object data;
 
+    public BaseReturnWrapper() {
+    }
+
     public BaseReturnWrapper(Object data) {
         this.data = data;
     }

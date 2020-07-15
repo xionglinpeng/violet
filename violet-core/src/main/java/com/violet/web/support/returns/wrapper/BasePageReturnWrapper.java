@@ -14,11 +14,11 @@ public abstract class BasePageReturnWrapper<E> {
     /**
      * 当前页码
      */
-    private int pageIndex;
+    private long pageIndex;
     /**
      * 每页数量
      */
-    private int pageSize;
+    private long pageSize;
     /**
      * 总页数
      */
@@ -38,19 +38,19 @@ public abstract class BasePageReturnWrapper<E> {
 
     public abstract void pageOf(Object data);
 
-    public int getPageIndex() {
+    public long getPageIndex() {
         return pageIndex;
     }
 
-    public void setPageIndex(int pageIndex) {
+    public void setPageIndex(long pageIndex) {
         this.pageIndex = pageIndex;
     }
 
-    public int getPageSize() {
+    public long getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
+    public void setPageSize(long pageSize) {
         this.pageSize = pageSize;
     }
 

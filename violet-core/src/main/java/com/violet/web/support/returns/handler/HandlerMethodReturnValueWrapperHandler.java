@@ -1,9 +1,7 @@
 package com.violet.web.support.returns.handler;
 
-import com.violet.web.support.returns.wrapper.DefaultReturnWrapper;
-import com.violet.web.support.returns.wrapper.BaseReturnWrapper;
-import com.violet.web.support.returns.wrapper.BasePageReturnWrapper;
-import com.violet.web.support.returns.wrapper.JpaPageReturnWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.violet.web.support.returns.wrapper.*;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Page;
 import org.springframework.util.AntPathMatcher;
@@ -41,8 +39,11 @@ public class HandlerMethodReturnValueWrapperHandler implements HandlerMethodRetu
 
     private static boolean JpaPageClass;
 
+    private static boolean baomidouPageClass;
+
     static {
         JpaPageClass = isPresent("org.springframework.data.domain.Page");
+        baomidouPageClass = isPresent("com.baomidou.mybatisplus.core.metadata.IPage");
     }
 
     public HandlerMethodReturnValueWrapperHandler(RequestResponseBodyMethodProcessor delegate, ReturnValueWrapperHandlerConfig wrapperHandlerConfig) {
@@ -83,12 +84,16 @@ public class HandlerMethodReturnValueWrapperHandler implements HandlerMethodRetu
 
     protected Object returnValueWrapper(Object returnValue, MethodParameter methodParameter) throws Exception {
         Object value = returnValue;
-
-        if (JpaPageClass && ClassUtils.isAssignable(Page.class, value.getClass())) {
-            //JPA paging object
-            value = returnPageValueWrapper(returnValue, JpaPageReturnWrapper::new);
+        if (Objects.nonNull(value)) {
+            if (JpaPageClass && ClassUtils.isAssignable(Page.class, value.getClass())) {
+                //JPA paging object
+                value = returnPageValueWrapper(returnValue, JpaPageReturnWrapper::new);
+            }
+            if (baomidouPageClass && ClassUtils.isAssignable(IPage.class, value.getClass())) {
+                //Baomidou paging object
+                value = returnPageValueWrapper(returnValue, BaomidouPageReturnWrapper::new);
+            }
         }
-
         if (Objects.isNull(wrapperClass)) {
             value = new DefaultReturnWrapper(value);
         } else {
@@ -122,7 +127,7 @@ public class HandlerMethodReturnValueWrapperHandler implements HandlerMethodRetu
         HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
         Objects.requireNonNull(request);
         for (String ignorePath : ignorePaths) {
-            return pathMatcher.match(ignorePath,request.getServletPath());
+            return pathMatcher.match(ignorePath, request.getServletPath());
         }
         return (Objects.nonNull(returnValue) && ClassUtils.isAssignable(returnValue.getClass(), BaseReturnWrapper.class)) ||
                 methodParameter.hasMethodAnnotation(IgnoreWrapper.class);

@@ -1,5 +1,7 @@
 package com.violet.web.support.returns.wrapper;
 
+import com.violet.web.support.MessageStatus;
+
 /**
  * <p></p>
  *
@@ -9,13 +11,16 @@ package com.violet.web.support.returns.wrapper;
  */
 public class DefaultReturnWrapper extends BaseReturnWrapper {
 
-    private static final String CODE = "200";
+    private static final int CODE = MessageStatus.OK.value();
 
-    private static final String MESSAGE = "successful";
+    private static final String MESSAGE = MessageStatus.OK.message();
 
     private Object code = CODE;
 
     private String message = MESSAGE;
+
+    public DefaultReturnWrapper() {
+    }
 
     public DefaultReturnWrapper(Object data) {
         super(data);
