@@ -38,7 +38,7 @@ public class ReturnValueHandlerConfiguration {
             return null;
         }
         Class<?> wrapperClass = Class.forName(stringWrapperClass);
-        if (!ClassUtils.isAssignable(wrapperClass, rootWrapperClass)) {
+        if (!ClassUtils.isAssignable(rootWrapperClass, wrapperClass)) {
             throw new ClassCastException("");
         }
         return (Class<T>) wrapperClass;
